@@ -1,0 +1,11 @@
+[project]
+name = "streamlit-infrahub"
+version = "0.1.0"
+description = "Streamlit connection and utilities for Infrahub"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "infrahub-sdk>=1.11.0",
+    "polars[pandas]>=1.27.1",
+    "streamlit>=1.44.1",
+]
