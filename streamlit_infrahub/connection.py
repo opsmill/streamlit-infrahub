@@ -1,13 +1,13 @@
+from typing import Any
+
+from infrahub_sdk import InfrahubClientSync
+from infrahub_sdk.client import SchemaTypeSync
+from infrahub_sdk.exceptions import NodeNotFoundError
 from streamlit.connections import BaseConnection
 
-from infrahub_sdk import InfrahubClientSync, Config
-from infrahub_sdk.branch import BranchData  # noqa: TC001
-from infrahub_sdk.client import SchemaTypeSync  # noqa: TC001
-from infrahub_sdk.exceptions import NodeNotFoundError
 
 class InfrahubConnection(BaseConnection):
-
-    def _connect(self) -> InfrahubClientSync:
+    def _connect(self, **kwargs: Any) -> InfrahubClientSync:  # noqa: PLR6301, ARG002
         # config = Config(
         #     server_address = self._secrets.get("address", None)
         # )
@@ -17,12 +17,12 @@ class InfrahubConnection(BaseConnection):
     def client(self) -> InfrahubClientSync:
         return self._instance
 
-    def get_display_label(self, kind: str | type[SchemaTypeSync], id: str, branch: str | None = None) -> str:
+    def get_display_label(self, kind: str | type[SchemaTypeSync], id: str, branch: str | None = None) -> str:  # noqa: A002
         """Get the display label for an object."""
         try:
-            obj = self.client.store.get(kind=kind, key=id,branch=branch)
+            obj = self.client.store.get(kind=kind, key=id, branch=branch)
             return obj.display_label
-        except NodeNotFoundError as exc:
+        except NodeNotFoundError:
             pass
 
         return id

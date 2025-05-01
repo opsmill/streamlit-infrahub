@@ -1,11 +1,9 @@
-from infrahub_sdk.schema import AttributeSchemaAPI
-from infrahub_sdk.schema.main import AttributeKind, NodeSchemaAPI, GenericSchemaAPI
-from infrahub_sdk.node import InfrahubNode, Attribute, RelatedNode, RelationshipManager
 from typing import Any
 
 import polars as pl
+from infrahub_sdk.node import Attribute, InfrahubNode, RelatedNode, RelationshipManager
+from infrahub_sdk.schema.main import GenericSchemaAPI, NodeSchemaAPI
 
-import streamlit as st
 
 def node_to_dict(obj: InfrahubNode, include_id: bool = True) -> dict[str, Any]:
     data = {}
@@ -13,11 +11,11 @@ def node_to_dict(obj: InfrahubNode, include_id: bool = True) -> dict[str, Any]:
     if include_id:
         data["index"] = obj.id or None
 
-    for attr_name in obj._schema.attribute_names:
+    for attr_name in obj._schema.attribute_names:  # noqa: SLF001
         attr: Attribute = getattr(obj, attr_name)
         data[attr_name] = attr.value
 
-    for rel_name in obj._schema.relationship_names:
+    for rel_name in obj._schema.relationship_names:  # noqa: SLF001
         rel = getattr(obj, rel_name)
         if not rel.initialized:
             continue
@@ -44,22 +42,26 @@ def node_to_dict(obj: InfrahubNode, include_id: bool = True) -> dict[str, Any]:
             data[rel_name] = peers
     return data
 
-def nodes_to_df(schema: NodeSchemaAPI | GenericSchemaAPI, nodes: list[InfrahubNode], include: list[str] | None = None) -> pl.DataFrame:
 
-    relationships = [ rel for rel in schema.relationships if rel.cardinality == "one"]
-    relationship_names = [ rel.name for rel in relationships ]
-    columns = schema.attribute_names # + relationship_names
+def nodes_to_df(
+    schema: NodeSchemaAPI | GenericSchemaAPI,
+    nodes: list[InfrahubNode],
+    include: list[str] | None = None,
+) -> pl.DataFrame:
+    # relationships = [rel for rel in schema.relationships if rel.cardinality == "one"]
+    # relationship_names = [rel.name for rel in relationships]
+    columns = schema.attribute_names  # + relationship_names
 
-    columns = [ (item.name, item.order_weight) for item in schema.attributes if not include or item.name in include ]
+    columns = [(item.name, item.order_weight) for item in schema.attributes if not include or item.name in include]
 
-    sorted_columns = sorted(columns, key=lambda x: x[1])
+    sorted_columns = sorted(columns, key=lambda x: x[1])  # noqa: FURB118
 
     data = {}
 
     for attr_name in schema.attribute_names:
         if include and attr_name not in include:
             continue
-        data[attr_name] = [ getattr(node, attr_name).value for node in nodes ]
+        data[attr_name] = [getattr(node, attr_name).value for node in nodes]
 
     # for rel_name in relationship_names:
     #     data[rel_name] = []
@@ -70,6 +72,4 @@ def nodes_to_df(schema: NodeSchemaAPI | GenericSchemaAPI, nodes: list[InfrahubNo
     #         else:
     #             data[rel_name].append(None)
 
-    df = pl.DataFrame(data, schema=[col[0] for col in sorted_columns])
-    return df
-
+    return pl.DataFrame(data, schema=[col[0] for col in sorted_columns])

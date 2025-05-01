@@ -1,12 +1,21 @@
-import streamlit as st
 from typing import Literal
+
+
 class StepperBar:
     """
     A stepper bar component for Streamlit.
 
     The code is based on https://malik-sunny18.medium.com/stepper-bar-in-snowflake-streamlit-82041f1f275a
     """
-    def __init__(self, steps: list[str], orientation: Literal['horizontal', 'vertical'] = 'horizontal', active_color: str = 'red', completed_color: str = 'blue', inactive_color: str = 'gray'):
+
+    def __init__(
+        self,
+        steps: list[str],
+        orientation: Literal["horizontal", "vertical"] = "horizontal",
+        active_color: str = "red",
+        completed_color: str = "blue",
+        inactive_color: str = "gray",
+    ) -> None:
         self.current_step: int = 0
         self.orientation: str = orientation
         self.active_color: str = active_color
@@ -18,15 +27,14 @@ class StepperBar:
         if 0 <= step < len(self.steps):
             self.current_step = step
         else:
-            raise ValueError("Step index out of range")
+            raise ValueError("Step index out of range")  # noqa: EM101
 
     def display(self) -> str:
-        if self.orientation == 'horizontal':
+        if self.orientation == "horizontal":
             return self._display_horizontal()
-        elif self.orientation == 'vertical':
+        if self.orientation == "vertical":
             return self._display_vertical()
-        else:
-            raise ValueError("Orientation must be either 'horizontal' or 'vertical'")
+        raise ValueError("Orientation must be either 'horizontal' or 'vertical'")  # noqa: EM101
 
     def _display_horizontal(self) -> str:
         stepper_html = "<div style='display:flex; justify-content:space-between; align-items:center;'>"

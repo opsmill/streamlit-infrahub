@@ -1,19 +1,17 @@
-from infrahub_sdk.schema import AttributeSchemaAPI
-from infrahub_sdk.schema.main import AttributeKind
-from infrahub_sdk.node import InfrahubNode, Attribute, RelatedNode, RelationshipManager
 from typing import Any
 
-import streamlit as st
-
+from infrahub_sdk.schema import AttributeSchemaAPI
+from infrahub_sdk.schema.main import AttributeKind
 
 
 def get_choice(attr: AttributeSchemaAPI, value: Any) -> dict[str, Any] | None:
     """Get the choice for a dropdown attribute."""
-    options = [ item for item in attr.choices if item["name"] == value]
+    options = [item for item in attr.choices if item["name"] == value]
     if len(options) == 1:
         return options[0]
 
     return None
+
 
 def display_attribute(attr: AttributeSchemaAPI, value: Any, container: Any) -> str:
     """Display an attribute in a human-readable format."""
