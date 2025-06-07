@@ -17,13 +17,14 @@ dev = [
     "pytest>=8.3.5",
     "ruff>=0.11.8",
     "yamllint>=1.37.0",
+    "pytest-cov>=4.1.0",
 ]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 filterwarnings = []
-addopts = "-vs"
+addopts = "-vs --cov=streamlit_infrahub --cov-report=term-missing"
 
 [tool.mypy]
 pretty = true
@@ -74,8 +75,6 @@ ignore = [
     "ERA001", # Found commented-out code
 ]
 
-
-#https://docs.astral.sh/ruff/formatter/black/
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"

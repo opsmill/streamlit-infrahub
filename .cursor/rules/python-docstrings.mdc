@@ -1,0 +1,19 @@
+---
+description: This rule explains how to write Python function docstrings for better code documentation and AI assistance
+globs: "**/*.py"
+alwaysApply: false
+---
+
+Follow these guidelines for writing clear and consistent Python docstrings:
+
+- Always use triple quotes (""") for docstrings
+- Follow Google-style docstring format
+- Include these sections when applicable:
+   - Brief one-line description
+   - Detailed description (if needed)
+   - Args/Parameters without typing
+   - Returns
+   - Raises
+   - Examples
+
+Example of a simple function docstring:
