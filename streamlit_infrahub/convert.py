@@ -6,6 +6,20 @@ from infrahub_sdk.schema.main import GenericSchemaAPI, NodeSchemaAPI
 
 
 def node_to_dict(obj: InfrahubNode, include_id: bool = True) -> dict[str, Any]:
+    """Convert an InfrahubNode object to a dictionary representation.
+
+    This function converts an InfrahubNode object into a dictionary format, including its attributes
+    and relationships. It handles both single relationships (RelatedNode) and multiple relationships
+    (RelationshipManager).
+
+    Args:
+        obj: The InfrahubNode object to convert
+        include_id: Whether to include the node's ID in the output dictionary. Defaults to True.
+
+    Returns:
+        A dictionary containing the node's attributes and relationships, with relationship values
+        represented as either single IDs or lists of IDs.
+    """
     data = {}
 
     if include_id:
@@ -48,6 +62,21 @@ def nodes_to_df(
     nodes: list[InfrahubNode],
     include: list[str] | None = None,
 ) -> pl.DataFrame:
+    """Convert a list of InfrahubNodes to a Polars DataFrame.
+
+    This function takes a list of InfrahubNode objects and converts them into a Polars DataFrame,
+    using the schema to determine the structure and order of columns. The function can optionally
+    filter which attributes to include in the resulting DataFrame.
+
+    Args:
+        schema: The schema API object defining the node structure
+        nodes: List of InfrahubNode objects to convert
+        include: Optional list of attribute names to include in the DataFrame. If None, includes all attributes.
+
+    Returns:
+        A Polars DataFrame containing the node data with columns for each included attribute,
+        ordered according to the schema's attribute order weights.
+    """
     # relationships = [rel for rel in schema.relationships if rel.cardinality == "one"]
     # relationship_names = [rel.name for rel in relationships]
     columns = schema.attribute_names  # + relationship_names

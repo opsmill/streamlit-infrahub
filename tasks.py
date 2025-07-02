@@ -10,7 +10,7 @@ MAIN_DIRECTORY_PATH = Path(__file__).parent
 @task(name="format")
 def format_all(context: Context) -> None:
     """Run RUFF to format all Python files."""
-    exec_cmds = ["ruff format .", "ruff check . --fix"]
+    exec_cmds = ["uv run ruff format .", "uv run ruff check . --fix"]
     with context.cd(MAIN_DIRECTORY_PATH):
         for cmd in exec_cmds:
             context.run(cmd, pty=True)
@@ -20,7 +20,7 @@ def format_all(context: Context) -> None:
 def lint_yaml(context: Context) -> None:
     """Run Linter to check all Python files."""
     print(" - Check code with yamllint")
-    exec_cmd = "yamllint ."
+    exec_cmd = "uv run yamllint -s ."
     with context.cd(MAIN_DIRECTORY_PATH):
         context.run(exec_cmd, pty=True)
 
@@ -29,7 +29,7 @@ def lint_yaml(context: Context) -> None:
 def lint_mypy(context: Context) -> None:
     """Run Linter to check all Python files."""
     print(" - Check code with mypy")
-    exec_cmd = "mypy --show-error-codes streamlit_infrahub"
+    exec_cmd = "uv run mypy --show-error-codes streamlit_infrahub"
     with context.cd(MAIN_DIRECTORY_PATH):
         context.run(exec_cmd, pty=True)
 

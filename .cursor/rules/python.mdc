@@ -1,0 +1,12 @@
+---
+description: This rule explains Python conventions and best practices for high-performance Python code.
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Python rules
+
+- Use type hints for all function parameters and return values
+- Avoid using Async code because streamlit doesn't support it
+- Use Pydantic models for dataclasses
+- Use ruff and mypy for type checking and validations, the additional parameters for these tools are located in `pyproject.toml`
