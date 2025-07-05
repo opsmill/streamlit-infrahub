@@ -169,60 +169,34 @@ jobs:
   #     - name: "Validate documentation style"
   #       run: ./vale $(find ./docs -type f \( -name "*.mdx" -o -name "*.md" \) )
 
-  # unit-tests:
-  #   env:
-  #     # workaround for Rich table column width
-  #     COLUMNS: 140
-  #   strategy:
-  #     matrix:
-  #       python-version:
-  #         - "3.9"
-  #         - "3.10"
-  #         - "3.11"
-  #         - "3.12"
-  #         - "3.13"
-  #   if: |
-  #     always() && !cancelled() &&
-  #     !contains(needs.*.result, 'failure') &&
-  #     !contains(needs.*.result, 'cancelled') &&
-  #     needs.files-changed.outputs.python == 'true'
-  #   needs: ["files-changed", "yaml-lint", "python-lint"]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 30
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v4"
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: "Setup environment"
-  #       run: |
-  #         pipx install poetry==2.1 --python python${{ matrix.python-version }}
-  #         poetry config virtualenvs.create true --local
-  #         pip install invoke toml codecov
-  #     - name: "Install Package"
-  #       run: "poetry install --all-extras"
-  #     - name: "Mypy Tests"
-  #       run: "poetry run mypy --show-error-codes infrahub_sdk/"
-  #     - name: "Unit Tests"
-  #       run: "poetry run pytest --cov infrahub_sdk tests/unit/"
-  #     - name: "Upload coverage to Codecov"
-  #       run: |
-  #         codecov --flags python-${{ matrix.python-version }}
-  #       env:
-  #         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-  #     # The pytest-cov plugin doesn't quite work with content that is
-  #     # auto-imported by our own infrahub pytest plugin, this workaround
-  #     # reports the missing lines
-  #     - name: "Report coverage for pytest-plugin"
-  #       if: matrix.python-version == '3.12'
-  #       run: |
-  #         source $(poetry env info --path)/bin/activate
-  #         coverage run --source=infrahub_sdk -m pytest tests/unit/pytest_plugin
-  #         coverage report -m
-  #         coverage xml
-  #         codecov --flags python-filler-${{ matrix.python-version }}
-  #       env:
-  #         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  unit-tests:
+    env:
+      # workaround for Rich table column width
+      COLUMNS: 140
+    if: needs.files-changed.outputs.python == 'true'
+    needs: ["files-changed", "yaml-lint", "python-lint"]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    timeout-minutes: 10
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v4"
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "0.7.12"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: "Set up Python ${{ matrix.python-version }}"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install the project
+        run: uv sync --locked --dev
+      - name: "Mypy Tests"
+        run: "uv run mypy --show-error-codes streamlit_infrahub/"
+      - name: "Unit Tests"
+        run: "uv run pytest tests/unit/ --cov=streamlit_infrahub --cov-report=xml"
