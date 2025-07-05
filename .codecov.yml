@@ -1,0 +1,21 @@
+---
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 2%
+        # adjust as needed based on how flakey your tests are
+        if_not_found: success
+        if_ci_failed: error
+    patch:
+      default:
+        target: auto
+        threshold: 2%
+        if_not_found: success

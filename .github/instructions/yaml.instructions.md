@@ -1,5 +1,5 @@
 ---
-applyTo: '**/*.py'
+applyTo: '**/*.{yml,yaml}'
 ---
 
 # Yaml rules
