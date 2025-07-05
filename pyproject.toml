@@ -5,7 +5,7 @@ description = "Streamlit connection and utilities for Infrahub"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "infrahub-sdk>=1.11.0",
+    "infrahub-sdk[all]>=1.11.0",
     "polars[pandas]>=1.27.1",
     "streamlit>=1.44.1",
 ]
@@ -86,3 +86,6 @@ known-first-party = ["streamlit_infrahub"]
 
 [tool.ruff.lint.pycodestyle]
 max-line-length = 150
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]  # Allow assert in test files
